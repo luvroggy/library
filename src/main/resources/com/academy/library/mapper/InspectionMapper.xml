@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+          "http://mybatis.org/dtd/mybatis-3-mapper.dtd">          
+<mapper namespace="com.academy.library.mapper.InspectionMapper">
+
+	<!-- by.hnc 필요한 쿼리들 정의 -->
+	
+	<select id="inspectionSelectJoin" parameterType="Inspection"
+		resultType="Inspection">
+		 SELECT i.inspection_id
+	   		, i.acquisition_id
+	   		, i.order_id
+	   		, i.request_id
+	   		, i.title
+	   		, i.author
+	   		, i.publisher
+	   		, i.isbn
+	   		, i.regdt
+	   		, i.moddt
+		,nvl(k.status, '입고대기') as status
+		from inspection i
+		,(select i.acquisition_id
+		,'입고완료' as status
+		from inspection i, stackbooks s
+		where i.acquisition_id = s.acquisition_id) k
+		where i.acquisition_id = k.acquisition_id(+)
+		order by status asc
+		        ,i.inspection_id desc
+	</select>
+	
+	<select id="inspectionSelect" parameterType="Inspection" resultType="Inspection">
+	   SELECT i.inspection_id
+	   		, i.acquisition_id
+	   		, i.order_id
+	   		, i.request_id
+	   		, i.title
+	   		, i.author
+	   		, i.publisher
+	   		, i.isbn
+	   		, i.regdt
+	   		, i.moddt
+		 FROM inspection i
+	    order by i.inspection_id desc
+	</select>
+	
+	<select id="inspectionSelectOne" parameterType="Inspection" resultType="Inspection">
+	   SELECT i.inspection_id
+	   		, i.acquisition_id
+	   		, i.order_id
+	   		, i.request_id
+	   		, i.title
+	   		, i.author
+	   		, i.publisher
+	   		, i.isbn
+	   		, i.regdt
+	   		, i.moddt
+		 FROM inspection i
+		WHERE inspection_id = #{inspectionId}
+	</select>
+	
+
+	<!-- 1명의 데이터 모두 수정 -->
+	<update id="inspectionUpdate" parameterType="Inspection">
+	   UPDATE inspection i
+	   <set>
+	   	<if test="acquisitionId != null">
+	   	  i.acquisition_id = #{acquisitionId},
+	   	</if>
+	   	<if test="orderId != null">
+	   	  i.order_id = #{orderId},
+	   	</if>
+	   	<if test="requestId != null">
+	   	  i.request_id = #{requestId},
+	   	</if>
+	   	  <if test="title != null">
+	   	  i.title = #{title},
+	   	</if>
+	   	  <if test="author != null">
+	   	  i.author = #{author},
+	   	</if>
+	   	  <if test="publisher != null">
+	   	  i.publisher = #{publisher},
+	   	</if>
+	   	  <if test="isbn != null">
+	   	  i.isbn = #{isbn},
+	   	</if>
+	   	  i.moddt = sysdate
+	   </set>
+	   	WHERE i.inspection_id = #{inspectionId}
+	  	<trim prefix="SET" suffixOverrides=","/>
+	 </update>
+	
+	<!-- 데이터 전부 삭제 혹은 1개만 삭제 -->
+	 <delete id="inspectionDelete" parameterType="Inspection">
+      DELETE inspection i
+       WHERE i.inspection_id = #{inspectionId}
+  	 </delete>
+	
+	<!-- 고객 1명의 정보 삽입 -->
+    <insert id="inspectionInsert" parameterType="Inspection">
+      INSERT INTO inspection(inspection_id
+      					   , acquisition_id
+      				 	   , order_id
+      				 	   , request_id
+      				 	   , title
+      				 	   , author
+      				 	   , publisher
+      				 	   , isbn)
+        VALUES((select TO_CHAR(SYSDATE, 'YYYYMMDD') || '-' || LPAD(NVL(MAX(SUBSTR(inspection_ID,10))+1, 1), 4, '0') from inspection WHERE TO_CHAR(SYSDATE,'YYYYMMDD') = SUBSTR(inspection_ID, 1, 8)), #{orderId}, #{acquisitionId}, #{requestId}, #{title}, #{author}, #{publisher}, #{isbn})
+  	</insert>
+	
+	
+</mapper>

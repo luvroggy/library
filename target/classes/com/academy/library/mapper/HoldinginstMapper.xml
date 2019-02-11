@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+          "http://mybatis.org/dtd/mybatis-3-mapper.dtd">          
+<mapper namespace="com.academy.library.mapper.HoldinginstMapper">
+
+	<!-- by.hnc 필요한 쿼리들 정의 -->
+	<select id="holdingSelectOne" parameterType="Holdinginst" resultType="Holdinginst"> <!-- 사용중 -->
+      SELECT h.institution_id
+      		,h.institution_name
+      		,h.institution_assigned
+      		,h.regdt
+      		,h.moddt
+        FROM holdinginst h
+       WHERE h.institution_id = #{institutionId}
+   </select>
+
+   <select id="holdingSelect" parameterType="Holdinginst" resultType="Holdinginst"> <!-- 사용중 -->
+      SELECT h.institution_id
+      		,h.institution_name
+      		,h.institution_assigned
+      		,h.regdt
+      		,h.moddt
+        FROM holdinginst h
+   </select>
+
+   <!-- 1명의 데이터 모두 수정 -->
+   <update id="holdinginstUpdate" parameterType="Holdinginst">
+      UPDATE holdinginst h
+      <set>
+         <if test="institutionName != null">
+           h.institution_name = #{institutionName},
+         </if>
+         <if test="institutionAssigned != null">
+           h.institution_assigned = #{institutionAssigned},
+         </if>
+         h.moddt = sysdate   
+      </set>
+       WHERE h.institution_id = #{institutionId}
+       <trim prefix="SET" suffixOverrides=","/>
+   </update>
+
+   <!-- 데이터 전부 삭제 혹은 1개만 삭제 -->
+   <delete id="holdinginstDelete" parameterType="Holdinginst">
+      DELETE holdinginst
+      WHERE institution_id = #{institutionId}
+   </delete>
+   
+   <!-- 고객 1명의 정보 삽입 -->
+   <insert id="holdingInsert" parameterType="Holdinginst">
+      INSERT INTO HOLDINGINST(institution_id
+			      		     ,institution_name
+			      		     ,institution_assigned)
+        VALUES(institution_ids.nextval, #{institutionName}, #{institutionAssigned})
+   </insert>
+	
+</mapper>

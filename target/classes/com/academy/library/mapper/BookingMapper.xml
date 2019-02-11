@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+          "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.academy.library.mapper.BookingMapper">
+
+	<!-- by.hnc 필요한 쿼리들 정의 -->
+	<select id="bookingSelectOne" parameterType="Booking" resultType="Booking"> <!-- 사용중 -->
+      SELECT b.booking_id 
+      		,b.book_id 
+      		,b.user_id 
+      		,b.booking_date 
+      		,b.booking_status 
+      		,b.regdt
+      		,b.moddt
+        FROM booking b
+       WHERE b.booking_id = #{bookingId}
+       
+   </select>
+
+   <select id="bookingSelect" parameterType="Booking" resultType="Booking"> <!-- 사용중 -->
+     SELECT b.booking_id 
+      		,b.book_id 
+      		,b.user_id 
+      		,b.booking_date 
+      		,b.booking_status
+      		,b.regdt
+      		,b.moddt 
+        FROM booking b
+        order by b.booking_id desc
+   </select>
+
+   <!-- 1명의 데이터 모두 수정 -->
+   <update id="bookingUpdate" parameterType="Booking">
+      UPDATE booking b
+      <set>
+         <if test="bookId != null">
+           b.book_id = #{bookId},
+         </if>
+         <if test="userId != null">
+           b.user_id  = #{userId},
+         </if>
+         <if test="bookingDate != null">
+           b.booking_date  = #{bookingDate},
+         </if>  
+          <if test="bookingStatus != null">
+           b.booking_status = #{bookingStatus},
+         </if>
+           b.moddt = sysdate   
+      </set>
+       WHERE b.booking_id = #{bookingId}
+       <trim prefix="SET" suffixOverrides=","/>
+   </update>
+
+   <!-- 데이터 전부 삭제 혹은 1개만 삭제 -->
+   <delete id="bookingDelete" parameterType="Booking">
+      DELETE booking
+      WHERE booking_id = #{bookingId}
+   </delete>
+   
+   <!-- 고객 1명의 정보 삽입 -->
+   <insert id="bookingInsert" parameterType="Booking">
+      INSERT INTO booking(booking_id 
+      					,book_id 
+      					,user_id 
+      					,booking_date
+      					,booking_status 
+      					 )
+        VALUES((select TO_CHAR(SYSDATE, 'YYYYMMDD') || '-' || LPAD(NVL(MAX(SUBSTR(booking_ID,10))+1, 1), 4, '0') from booking WHERE TO_CHAR(SYSDATE,'YYYYMMDD') = SUBSTR(booking_ID, 1, 8)), #{bookId}, #{userId}, #{bookingDate}, #{bookingStatus})
+   </insert>
+
+
+
+</mapper>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+          "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.academy.library.mapper.AcquisitionMapper">
+
+	<select id="acquisitionSelectJoin" parameterType="Acquisition"
+		resultType="Acquisition">
+		select a.acquisition_id
+		, a.request_id
+		, a.user_id
+		, a.title
+		, a.author
+		, a.publisher
+		, a.isbn
+		, a.regdt
+		, a.moddt
+      ,nvl(k.status, '주문대기') as status
+ 		 from acquisition a
+      ,(select a.acquisition_id
+              ,'주문완료' as status
+          from acquisition a, orderlist o
+         where a.acquisition_id = o.acquisition_id) k
+ where a.acquisition_id = k.acquisition_id(+)
+ order by status asc, a.acquisition_id desc
+	</select>
+	
+<!-- 	<select id="acquisitionSearchId" parameterType="String" -->
+<!-- 		resultType="_int"> -->
+<!-- 		select count(a.acquisition_id) -->
+<!-- 		from stackBooks a -->
+<!-- 		where 1=1 -->
+<!-- 		<if test="value != null"> -->
+<!-- 			and a.acquisition_id LIKE #{value} -->
+<!-- 		</if> -->
+<!-- 	</select> -->
+
+	<select id="acquisitionSelect" parameterType="Acquisition"
+		resultType="Acquisition">
+		SELECT a.acquisition_id
+		, a.acquisition_status
+		, a.request_id
+		, a.user_id
+		, a.title
+		, a.author
+		, a.publisher
+		, a.isbn
+		, a.regdt
+		, a.moddt
+		FROM acquisition a
+		order by a.acquisition_id desc
+	</select>
+
+	<select id="acquisitionSelectOne" parameterType="Acquisition"
+		resultType="Acquisition">
+		SELECT a.acquisition_id
+		, a.acquisition_status
+		, a.request_id
+		, a.user_id
+		, a.title
+		, a.author
+		, a.publisher
+		, a.isbn
+		, a.regdt
+		, a.moddt
+		FROM acquisition a
+		WHERE acquisition_id= #{acquisitionId}
+	</select>
+
+
+	<!-- 1명의 데이터 모두 수정 -->
+	<update id="acquisitionUpdate" parameterType="Acquisition">
+		UPDATE Acquisition a
+		<set>
+			<if test="acquisitionStatus != null">
+				a.acquisition_status = #{acquisitionStatus},
+			</if>
+			<if test="requestId != null">
+				a.request_id = #{requestId},
+			</if>
+			<if test="userId != null">
+				a.user_id = #{userId},
+			</if>
+			<if test="title != null">
+				a.title = #{title},
+			</if>
+			<if test="author != null">
+				a.author = #{author},
+			</if>
+			<if test="publisher != null">
+				a.publisher = #{publisher},
+			</if>
+			<if test="isbn != null">
+				a.isbn = #{isbn},
+			</if>
+			a.moddt = sysdate
+		</set>
+		WHERE a.acquisition_id = #{acquisitionId}
+		<trim prefix="SET" suffixOverrides="," />
+	</update>
+
+	<!-- 데이터 전부 삭제 혹은 1개만 삭제 -->
+	<delete id="acquisitionDelete" parameterType="Acquisition">
+		DELETE Acquisition
+		WHERE acquisition_id = #{acquisitionId}
+	</delete>
+
+	<!-- 고객 1명의 정보 삽입 -->
+	<insert id="acquisitionInsert" parameterType="Acquisition">
+		INSERT INTO Acquisition(acquisition_id
+		, acquisition_status
+		, request_id
+		, user_id
+		, title
+		, author
+		, publisher
+		, isbn)
+		VALUES((select TO_CHAR(SYSDATE, 'YYYYMMDD') || '-' ||
+		LPAD(NVL(MAX(SUBSTR(ACQUISITION_ID,10))+1, 1), 4, '0') from
+		acquisition WHERE TO_CHAR(SYSDATE,'YYYYMMDD') = SUBSTR(acquisition_ID,
+		1, 8)), #{acquisitionStatus}, #{requestId}, #{userId}, #{title},
+		#{author}, #{publisher}, #{isbn})
+	</insert>
+
+</mapper>

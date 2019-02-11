@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+          "http://mybatis.org/dtd/mybatis-3-mapper.dtd">          
+<mapper namespace="com.academy.library.mapper.UsersMapper">
+
+
+   <select id="usersSelect" parameterType="Users" resultType="Users">
+      SELECT u.user_id
+      	   , u.user_name
+      	   , u.user_phone
+      	   , u.user_email
+      	   , u.regdt
+      	   , u.moddt
+        FROM users u
+       ORDER by u.user_id asc
+   </select>
+  
+   <select id="usersSelectOne" parameterType="Users" resultType="Users">
+      SELECT u.user_id
+           , u.password
+      	   , u.user_name
+      	   , u.user_phone
+      	   , u.user_email
+      	   , u.regdt
+      	   , u.moddt
+        FROM users u
+       WHERE u.user_id= #{userId}
+   </select>
+  
+
+     <!-- 1명의 데이터 모두 수정 -->
+   <update id="usersUpdate" parameterType="Users">
+      UPDATE Users u
+      <set>
+      	 <if test="password != null">
+      	   u.password = #{password},
+      	 </if>
+         <if test="userName != null">
+           u.user_name = #{userName},
+         </if>
+         <if test="userPhone != null">
+           u.user_phone = #{userPhone},
+         </if>
+         <if test="userEmail != null">
+           u.user_email = #{userEmail},
+         </if>
+         <if test="userGrade != null">
+           u.user_grade = #{userGrade},
+         </if>
+           u.moddt = sysdate     
+      </set>
+       WHERE u.user_id  = #{userId}
+       <trim prefix="SET" suffixOverrides=","/>
+   </update>
+
+   <!-- 데이터 전부 삭제 혹은 1개만 삭제 -->
+   <delete id="usersDelete" parameterType="Users">
+      DELETE Users
+      WHERE user_id = #{userId}
+   </delete>
+   
+   <!-- 고객 1명의 정보 삽입 -->
+   <insert id="usersInsert" parameterType="Users">
+      INSERT INTO Users(   user_id
+                         , password
+                         , user_name
+                         , user_phone
+                         , user_email)
+        VALUES(#{userId}, #{password}, #{userName}, #{userPhone}, #{userEmail})
+   </insert>
+	
+	
+</mapper>

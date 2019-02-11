@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+          "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.academy.library.mapper.RequestMapper">
+
+<!-- 	<select id="successRequest" parameterType="Request" -->
+<!-- 		resultType="Request"> -->
+<!-- 		select r.request_id -->
+<!-- 		, r.user_id -->
+<!-- 		, r.request_status -->
+<!-- 		, r.isbn -->
+<!-- 		, r.title -->
+<!-- 		, r.author -->
+<!-- 		, r.publisher -->
+<!-- 		, r.regdt -->
+<!-- 		, r.moddt  -->
+<!-- 		,nvl(a.status, '입고완료') as status -->
+<!-- 		from stackbooks s -->
+<!-- 		,(select r.request_id -->
+<!-- 		,'입고대기' as status -->
+<!-- 		from request r, stackbooks s -->
+<!-- 		where r.request_id = s.request_id) a -->
+<!-- 		where r.request_id = a.request_id(+) -->
+<!-- 		order by status asc -->
+<!-- 	</select> -->
+
+	<select id="requestSelectJoin" parameterType="Request" resultType="Request">
+		select    r.request_id
+				, r.user_id
+				, r.request_status
+				, r.isbn
+				, r.title
+				, r.author
+				, r.publisher
+				, r.regdt
+				, r.moddt 
+		   from request r 
+		  where request_id 
+		        not in(
+		 				select DISTINCT r.request_id
+		  				  from request r, acquisition a
+		  				 where r.request_id = a.request_id)
+		  		order by r.request_id desc
+	</select>
+	
+	<select id="requestSelect" parameterType="Request" resultType="Request">
+		SELECT r.request_id
+		, r.user_id
+		, r.request_status
+		, r.isbn
+		, r.title
+		, r.author
+		, r.publisher
+		, r.regdt
+		, r.moddt
+		FROM Request r
+		order by r.request_id desc
+	</select>
+
+	<select id="requestSelectOne" parameterType="Request"
+		resultType="Request">
+		SELECT r.request_id
+		, r.user_id
+		, r.request_status
+		, r.title
+		, r.author
+		, r.publisher
+		, r.regdt
+		, r.moddt
+		FROM Request r
+		WHERE r.request_id= #{requestId}
+	</select>
+
+
+<!-- 	<select id="requestUserId" parameterType="String" resultType="Request"> -->
+<!-- 		SELECT r.request_id -->
+<!-- 		, r.user_id -->
+<!-- 		, r.request_status -->
+<!-- 		, r.title -->
+<!-- 		, r.author -->
+<!-- 		, r.publisher -->
+<!-- 		, r.regdt -->
+<!-- 		, r.moddt -->
+<!-- 		FROM Request r -->
+<!-- 		WHERE r.user_id= #{value} -->
+<!-- 	</select> -->
+	<select id="requestUserId" parameterType="String" resultType="Request">
+		select r.request_id
+		, r.user_id
+		, r.request_status
+		, r.isbn
+		, r.title
+		, r.author
+		, r.publisher
+		, r.regdt
+		, r.moddt 
+		,nvl(a.status, '요청진행중') as status
+		from request r
+		,(select r.request_id
+		,'입고완료' as status
+		from request r, stackbooks s
+		where r.request_id = s.request_id) a
+		where r.request_id = a.request_id(+)
+          and r.user_id= #{value}
+        order by status      asc
+                ,request_id  desc
+	</select>
+
+	
+
+	<!-- 1명의 데이터 모두 수정 -->
+	<update id="requestUpdate" parameterType="Request">
+		UPDATE Request r
+		<set>
+			<if test="userId != null">
+				r.user_id = #{userId},
+			</if>
+			<if test="isbn != null">
+				r.isbn = #{isbn},
+			</if>
+			<if test="requestStatus != null">
+				r.request_status = #{requestStatus},
+			</if>
+			<if test="title != null">
+				r.title = #{title},
+			</if>
+			<if test="author != null">
+				r.author = #{author},
+			</if>
+			<if test="publisher != null">
+				r.publisher = #{publisher},
+			</if>
+			r.moddt = sysdate
+		</set>
+		WHERE r.request_id = #{requestId}
+		<trim prefix="SET" suffixOverrides="," />
+	</update>
+
+	<!-- 데이터 전부 삭제 혹은 1개만 삭제 -->
+	<delete id="requestDelete" parameterType="Request">
+		DELETE Request
+		WHERE request_id = #{requestId}
+	</delete>
+
+	<!-- 고객 1명의 정보 삽입 -->
+	<insert id="requestInsert" parameterType="Request">
+		INSERT INTO Request (request_id
+		, user_id
+		, isbn
+		, request_status
+		, title
+		, author
+		, publisher)
+		VALUES((select TO_CHAR(SYSDATE, 'YYYYMMDD') || '-' ||
+		LPAD(NVL(MAX(SUBSTR(request_ID,10))+1, 1), 4, '0') from request WHERE
+		TO_CHAR(SYSDATE,'YYYYMMDD') = SUBSTR(request_ID, 1, 8)), #{userId}, #{isbn},
+		 #{requestStatus}, #{title}, #{author}, #{publisher})
+	</insert>
+
+
+</mapper>

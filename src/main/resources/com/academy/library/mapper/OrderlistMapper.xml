@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+          "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.academy.library.mapper.OrderlistMapper">
+
+	<select id="orderlistSelectJoin" parameterType="Orderlist"
+		resultType="Orderlist">
+		SELECT o.order_id
+		,o.acquisition_id
+		,o.request_id
+		,o.title
+		,o.author
+		,o.publisher
+		,o.quantity
+		,o.price
+		,o.isbn
+		,o.regdt
+		,o.moddt
+		,nvl(k.status, '검수대기') as status
+		from orderlist o
+		,(select o.order_id
+		,'검수완료' as status
+		from orderlist o, inspection i
+		where o.order_id = i.order_id) k
+		where o.order_id = k.order_id(+)
+		order by status asc, o.order_id desc
+	</select>
+
+	<!-- by.hnc 필요한 쿼리들 정의 -->
+	<select id="orderlistSelectOne" parameterType="Orderlist" resultType="Orderlist"> <!-- 사용중 -->
+		SELECT o.order_id
+				,o.acquisition_id
+				,o.request_id
+				,o.title
+				,o.author
+				,o.publisher
+				,o.quantity
+				,o.price
+				,o.isbn
+				,o.regdt
+				,o.moddt
+		FROM orderlist o
+		WHERE o.order_id = #{orderId}
+	</select>
+
+	<select id="orderlistSelect" parameterType="Orderlist"
+		resultType="Orderlist"> <!-- 사용중 -->
+		SELECT o.order_id
+		,o.acquisition_id
+		,o.request_id
+		,o.title
+		,o.author
+		,o.publisher
+		,o.quantity
+		,o.price
+		,o.isbn
+		,o.regdt
+		,o.moddt
+		FROM orderlist o
+		order by o.order_id desc
+	</select>
+
+	<!-- 1명의 데이터 모두 수정 -->
+	<update id="orderlistUpdate" parameterType="Orderlist">
+		UPDATE orderlist o
+		<set>
+			<if test="acquisitionId != null">
+				o.acquisition_id = #{acquisitionId},
+			</if>
+			<if test="requestId != null">
+				o.request_id = #{requestId},
+			</if>
+			<if test="title != null">
+				o.title = #{title},
+			</if>
+			<if test="author != null">
+				o.author = #{author},
+			</if>
+			<if test="publisher != null">
+				o.publisher = #{publisher},
+			</if>
+			<if test="quantity != null">
+				o.quantity = #{quantity},
+			</if>
+			<if test="price != null">
+				o.price = #{price},
+			</if>
+			<if test="isbn != null">
+				o.isbn = #{isbn},
+			</if>
+			o.moddt = sysdate
+		</set>
+		WHERE o.order_id = #{orderId}
+		<trim prefix="SET" suffixOverrides="," />
+	</update>
+
+	<!-- 데이터 전부 삭제 혹은 1개만 삭제 -->
+	<delete id="orderlistDelete" parameterType="Orderlist">
+		DELETE orderlist
+		WHERE order_id = #{orderId}
+	</delete>
+
+	<!-- 고객 1명의 정보 삽입 -->
+	<insert id="orderlistInsert" parameterType="Orderlist">
+		INSERT INTO
+		ORDERLIST(order_id
+		,acquisition_id
+		,request_id
+		,title
+		,author
+		,publisher
+		,quantity
+		,price
+		,isbn)
+		VALUES((select TO_CHAR(SYSDATE, 'YYYYMMDD') ||
+		'-' ||
+		LPAD(NVL(MAX(SUBSTR(order_ID,10))+1, 1), 4, '0') from orderlist
+		WHERE
+		TO_CHAR(SYSDATE,'YYYYMMDD') = SUBSTR(order_ID, 1, 8)),
+		#{acquisitionId}, #{requestId}, #{title}, #{author}, #{publisher},
+		#{quantity}, #{price}, #{isbn})
+	</insert>
+
+
+</mapper>

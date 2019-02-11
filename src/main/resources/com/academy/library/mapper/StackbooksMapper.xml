@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+          "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.academy.library.mapper.StackbooksMapper">
+
+	<select id="rentalStackbooks" parameterType="Stackbooks"
+		resultType="Stackbooks">
+		select s.book_id
+		,s.title
+		,nvl(a.status, '대여가능') as status
+		from stackbooks s
+		,(select s.book_id
+		,s.title
+		,r.return_date
+		,r.due_date
+		,r.user_id
+		,'예약가능' as status
+		from stackbooks s, rental r
+		where r.BOOK_ID = s.BOOK_ID
+		and r.return_date is null) a
+		where s.book_id = a.book_id(+)
+		order by s.title asc
+	</select>
+
+	<select id="stackbooksSelect" parameterType="Stackbooks"
+		resultType="Stackbooks">
+		select s.book_id
+		,s.acquisition_id, s.request_id
+		,s.title
+		,s.author
+		,s.isbn
+		,s.translator
+		,s.book_copy
+		,s.publisher
+		,s.book_status
+		,s.institution_id
+		,s.regdt
+		,s.moddt
+		from stackbooks s
+		order by s.title asc
+	</select>
+	<select id="stackbooksSelectOne" parameterType="Stackbooks"
+		resultType="Stackbooks">
+		select s.book_id
+		,s.acquisition_id, s.request_id
+		,s.title
+		,s.author
+		,s.isbn
+		,s.translator
+		,s.book_copy
+		,s.publisher
+		,s.book_status
+		,s.institution_id
+		,s.regdt
+		,s.moddt
+		from stackbooks s
+		where s.book_id = #{bookId}
+	</select>
+
+	<select id="stackbooksSearchTitle" parameterType="String"
+		resultType="Stackbooks">
+		select s.book_id
+		,s.acquisition_id, s.request_id
+		,s.title
+		,s.author
+		,s.isbn
+		,s.translator
+		,s.book_copy
+		,s.publisher
+		,s.book_status
+		,s.institution_id
+		,s.regdt
+		,s.moddt
+		from stackBooks s
+		where s.title LIKE #{value}
+		order by
+		s.title ASC
+	</select>
+
+	<select id="stackbooksSearchIsbn" parameterType="String"
+		resultType="_int">
+		select count(s.isbn)
+		from stackBooks s
+		where 1=1
+		<if test="value != null">
+			and s.isbn LIKE #{value}
+		</if>
+	</select>
+
+	<insert id="stackbooksInsert" parameterType="Stackbooks">
+		INSERT INTO
+		stackBooks(
+				book_id
+				, acquisition_id
+				, title
+				, author
+				, isbn
+				, translator
+				, request_id
+				, book_copy
+				, publisher
+				, institution_id)
+		VALUES(
+				  book_ids.nextval
+				, #{acquisitionId}
+				, #{title}
+				, #{author}
+				, #{isbn}
+				, #{translator}
+				, #{requestId}
+				, #{bookCopy}
+				, #{publisher}
+			    , #{institutionId})
+	</insert>
+
+	<update id="stackbooksUpdate" parameterType="Stackbooks">
+		update stackbooks s
+		<set>
+			<if test="title != null">
+				s.title = #{title},
+			</if>
+			<if test="acquisitionId != null">
+				s.acquisition_id, = #{acquisitionId},
+			</if>
+			<if test="requestId != null">
+			s.request_id = #{requestId},
+			</if>
+			<if test="author != null">
+				s.author = #{author},
+			</if>
+			<if test="isbn != null">
+				s.isbn = #{isbn},
+			</if>
+			<if test="translator != null">
+				s.translator = #{translator},
+			</if>
+			<if test="bookCopy != null">
+				s.book_copy = #{bookCopy},
+			</if>
+			<if test="publisher != null">
+				s.publisher = #{publisher},
+			</if>
+			<if test="bookStatus != null">
+				s.book_status = #{bookStatus},
+			</if>
+			<if test="institutionId != null">
+				s.institution_id = #{institutionId},
+			</if>
+			s.moddt = sysdate
+		</set>
+		where s.book_id = #{bookId}
+		<trim prefix="SET" suffixOverrides="," />
+
+	</update>
+	<update id="stackbooksStatus" parameterType="Int">
+		update stackbooks s
+		set s.book_status = r.book_status
+		from rental r
+		where s.book_id =
+		#{value}
+	</update>
+</mapper>                   

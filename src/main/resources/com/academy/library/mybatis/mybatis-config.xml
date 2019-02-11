@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+   PUBLIC "-//mybatis.org//DTD Config3.0//EN"
+          "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+	</settings>
+
+	<typeAliases>
+		<typeAlias type="com.academy.library.dto.Acquisition" alias="Acquisition" />
+		<typeAlias type="com.academy.library.dto.Booking" alias="Booking" />
+		<typeAlias type="com.academy.library.dto.Code" alias="Code" />
+		<typeAlias type="com.academy.library.dto.Holdinginst" alias="Holdinginst" />
+		<typeAlias type="com.academy.library.dto.Inspection" alias="Inspection" />
+		<typeAlias type="com.academy.library.dto.Login" alias="Login" />
+		<typeAlias type="com.academy.library.dto.Orderlist" alias="Orderlist" />
+		<typeAlias type="com.academy.library.dto.Rental" alias="Rental" />
+		<typeAlias type="com.academy.library.dto.Request" alias="Request" />
+		<typeAlias type="com.academy.library.dto.Stackbooks" alias="Stackbooks" />
+		<typeAlias type="com.academy.library.dto.Users" alias="Users" />
+
+	</typeAliases>
+		
+	<mappers>
+		<!-- by.hnc 필요한 매퍼파일 등록 -->
+		<mapper resource="com/academy/library/mapper/AcquisitionMapper.xml"/>
+		<mapper resource="com/academy/library/mapper/BookingMapper.xml"/>
+		<mapper resource="com/academy/library/mapper/CodeMapper.xml"/>
+		<mapper resource="com/academy/library/mapper/HoldinginstMapper.xml"/>
+		<mapper resource="com/academy/library/mapper/InspectionMapper.xml"/>
+		<mapper resource="com/academy/library/mapper/LoginMapper.xml"/>
+		<mapper resource="com/academy/library/mapper/OrderlistMapper.xml"/>
+		<mapper resource="com/academy/library/mapper/RentalMapper.xml"/>
+		<mapper resource="com/academy/library/mapper/RequestMapper.xml"/>
+		<mapper resource="com/academy/library/mapper/StackbooksMapper.xml"/>
+		<mapper resource="com/academy/library/mapper/UsersMapper.xml"/>
+	</mappers>
+</configuration>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          

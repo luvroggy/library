@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+          "http://mybatis.org/dtd/mybatis-3-mapper.dtd">          
+<mapper namespace="com.academy.library.mapper.RentalMapper">
+
+	<!-- by.hnc 필요한 쿼리들 정의 -->
+	 <!-- 전체 등록된 사용자 목록 조회 -->
+
+   <select id="rentalSelectOne" parameterType="Rental" resultType="Rental"> <!-- 사용중 -->
+      SELECT r.rental_id 
+		   , r.book_id
+		   , r.user_id
+		   , r.rental_status
+		   , r.rental_number
+		   , r.due_date
+		   , r.rental_date
+		   , r.regdt
+		   , r.moddt
+        FROM rental r
+       WHERE r.rental_id = #{rentalId}
+   </select>
+   <select id="rentalSelectbyUser" parameterType="String" resultType="Rental"> <!-- 사용중 -->
+      SELECT r.rental_id 
+		   , r.book_id
+		   , r.user_id
+		   , r.rental_status
+		   , r.rental_number
+		   , r.due_date
+		   , r.rental_date
+		   , r.return_date
+		   , r.regdt
+		   , r.moddt
+        FROM rental r
+       WHERE r.user_id = #{value}
+       order by r.rental_id desc
+   </select>
+
+   <select id="rentalSelect" parameterType="Rental" resultType="Rental"> <!-- 사용중 -->
+            
+       select r.rental_id 
+		   , r.book_id
+		   , r.user_id
+		   , r.rental_status
+		   , r.rental_number
+		   , r.return_date
+		   , r.due_date
+		   , r.rental_date
+		   , r.regdt
+		   , r.moddt
+		,nvl(a.status, '반납완료') as status
+		from rental r
+		,(select r.return_date
+        ,r.rental_id
+		,'반납필요' as status
+		from rental r
+		where r.return_date is null) a
+		where r.rental_id = a.rental_id(+)
+		order by status desc, r.rental_id desc
+   </select>
+   
+
+	<update id="rentalTwice" parameterType="Rental">
+		update rental r
+		<set>
+			r.rental_number = 2,
+			r.rental_date = sysdate,
+			r.moddt = sysdate,
+			r.due_date = sysdate+7
+		where r.rental_id = #{rentalId}
+		  and r.rental_number &lt; 2
+		</set>
+	</update>
+	
+	
+	<update id="rentalReturn" parameterType="Rental">
+		update rental r
+		<set>
+		       r.return_date = sysdate
+		      ,r.moddt = sysdate
+		where r.rental_id = #{rentalId}
+		</set>
+	</update>
+	
+
+   <!-- 1명의 데이터 모두 수정 -->
+   <update id="rentalUpdate" parameterType="Rental">
+      UPDATE rental r
+      <set>
+         <if test="rentalStatus != null">
+           r.rental_status = #{rentalStatus},
+         </if>
+         <if test="rentalNumber != null">
+           r.rental_number = #{rentalNumber},
+         </if> 
+           r.rental_date = sysdate,
+           r.due_date = sysdate + 7   
+           r.moddt = sysdate
+      </set>
+       WHERE r.rental_id = #{rentalId}
+       <trim prefix="SET" suffixOverrides=","/>
+   </update>
+
+   <!-- 데이터 전부 삭제 혹은 1개만 삭제 -->
+   <delete id="rentalDelete" parameterType="Rental">
+      DELETE rental r
+      WHERE r.rental_id = #{rentalId}
+   </delete>
+   
+   <!-- 고객 1명의 정보 삽입 -->
+   <insert id="rentalInsert" parameterType="Rental">
+   
+   insert into rental(rental_id, book_id, user_id, rental_number)
+   select (select TO_CHAR(SYSDATE, 'YYYYMMDD') || '-' || LPAD(NVL(MAX(SUBSTR(rental_ID,10))+1, 1), 4, '0') from rental WHERE TO_CHAR(SYSDATE,'YYYYMMDD') = SUBSTR(rental_ID, 1, 8)), #{bookId}, #{userId}, #{rentalNumber} from dual
+   
+   </insert>
+	
+</mapper>
