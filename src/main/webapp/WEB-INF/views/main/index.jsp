@@ -6,7 +6,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>오정북스 도서 관리 시스템</title>
+<title>콩콩북스 도서 관리 시스템</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
@@ -14,7 +14,7 @@
 <body>
    <div align="center">
       <br/>
-      <a href="/"><img alt="오정북스 로고" src="/resources/img/ojeong.png" width="300px"></a>
+      <a href="/"><img alt="콩콩북스 로고" src="" width="300px"></a>
       <br/>
       <br/>
    </div>
@@ -148,18 +148,18 @@
          <c:when test="${empty content}">
          	<div class="jumbotron">
 			  <div class="container">
-			    <h1>오정북스에 오신 것을 환영합니다!</h1>
+			    <h1>콩콩북스에 오신 것을 환영합니다!</h1>
   				<p>보고 싶은 책이 현재 도서관에 있는지 확인해보세요!</p>
   				<p><a class="btn btn-primary btn-lg" href="/stackbooks/list" role="button">보러가기</a></p>
 			  </div>
 			</div>
 			<div style="margin-left: 20px;">
 			<div class="page-header">
-  				<h1>오정북스 <small>오정동의 작은 쉼터</small></h1>
+  				<h1>콩콩북스 <small>콩콩동의 작은 쉼터</small></h1>
 			</div>
-			<p class="lead">오정북스는 오정동에 위치한 대덕구에서 지원하는 작은 쉼터입니다.</p>
+			<p class="lead">콩콩북스는 콩콩동에 위치한 대전에서 지원하는 작은 쉼터입니다.</p>
 			<p>방문하시는 모든 분들께 편안한 장소를 제공하기 위하여 늘 노력하고, 건의함을 통해 불편사항을 접수하고 있습니다.
-			<br/>여러분들의 관심과 사랑에 늘 보답하는 오정북스가 되겠습니다.</p>
+			<br/>여러분들의 관심과 사랑에 늘 보답하는 콩콩북스가 되겠습니다.</p>
 			</div>
          </c:when>
          <c:otherwise>
@@ -168,9 +168,9 @@
       </c:choose>
    <hr/>
    <div id="footer" align="left" style="font-family:Trebuchet MS, Dotum;">
-   Copyright&copy; Hannam Univ. All rights reserved. <br/>
-   (306-791) 대전광역시 대덕구 한남로 70 오정북스 <br/>
-   (042)629-7689(대출/반납)   	
+   Copyright&copy; Kong Univ. All rights reserved. <br/>
+   (11111) 콩까지마 <br/>
+   (042)222-2222(대출/반납)   	
    </div>
       
             

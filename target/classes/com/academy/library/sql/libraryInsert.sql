@@ -31,7 +31,7 @@ insert into code(code_id, code, code_super, code_name) values (code_ids.NEXTVAL,
 
 insert into code(code_id, code, code_name) values (CODE_IDS.NEXTVAL, 'INST', '소장처');
 insert into code(code_id, code, code_super, code_name) values (code_ids.NEXTVAL, 'INST01', 'INST', '중앙도서관');   
-insert into code(code_id, code, code_super, code_name) values (code_ids.NEXTVAL, 'INST02', 'INST', '대덕밸리');   
+insert into code(code_id, code, code_super, code_name) values (code_ids.NEXTVAL, 'INST02', 'INST', '테크노밸리');   
 
 insert into code(code_id, code, code_super, code_name) values (code_ids.NEXTVAL, 'INST0101', 'INST01', '000(총류)');   
 insert into code(code_id, code, code_super, code_name) values (code_ids.NEXTVAL, 'INST0102', 'INST01', '100(철학)');
@@ -64,7 +64,7 @@ insert into code(CODE_ID, CODE, code_super, code_name) values (code_ids.nextval,
 insert into code(CODE_ID, CODE, code_super, code_name) values (code_ids.nextval, 'FACI09', 'FACI', '공과대학');
 insert into code(CODE_ID, CODE, code_super, code_name) values (code_ids.nextval, 'FACI11', 'FACI', '법정대학');
 insert into code(CODE_ID, CODE, code_super, code_name) values (code_ids.nextval, 'FACI74', 'FACI', '생명나노과학대학');
-insert into code(CODE_ID, CODE, code_super, code_name) values (code_ids.nextval, 'FACI50', 'FACI', '린튼글로벌비즈니스');
+insert into code(CODE_ID, CODE, code_super, code_name) values (code_ids.nextval, 'FACI50', 'FACI', '글로벌비즈니스');
 insert into code(code_id, code, code_super, code_name) values (code_ids.NEXTVAL, 'FACI0101', 'FACI01', '자유전공학과');
 insert into code(code_id, code, code_super, code_name) values (code_ids.NEXTVAL, 'FACI0301', 'FACI03', '국어교육학과');
 insert into code(code_id, code, code_super, code_name) values (code_ids.NEXTVAL, 'FACI0302', 'FACI03', '영어교육학과');
@@ -424,15 +424,15 @@ INSERT INTO stackbooks(book_id, title, author, isbn, translator, book_type,  boo
 values(book_ids.NEXTVAL, '실용낭만 취미살이 : 직업 유목민 12인의 나답게 사는 법', '정원', '9791195981762', '', 'BKTY01', 2, '피그말리온', 'BKST01', 1);
 
 INSERT INTO holdinginst (institution_id, institution_name, institution_assigned)
-VALUES (INSTITUTION_IDS.NEXTVAL,'한남대학교 중앙도서관','INST0101');
+VALUES (INSTITUTION_IDS.NEXTVAL,'대학교 중앙도서관','INST0101');
 
 INSERT INTO USERS (user_id, PASSWORD, user_name, user_email) 
-VALUES ('dudwn960226', 'yj12345', '김영주', 'myodo2114@nate.com');
+VALUES ('dudwn960226', 'yj12345', '김김김', 'myodo2114@nate.com');
 INSERT INTO USERS (user_id, PASSWORD, user_name, user_email) 
-VALUES ('whddbs26', 'jy1004', '전종윤', 'jjy1004@naver.com');
+VALUES ('whddbs26', 'jy1004', '전전전', 'jjy1004@naver.com');
 INSERT INTO USERS (user_id, PASSWORD, user_name, user_email, user_grade) 
-VALUES ('boram111', '123456rr', '신보람', 'boram2@nate.com', 'admin');
+VALUES ('boram111', '123456rr', '신신신', 'boram2@nate.com', 'admin');
 INSERT INTO USERS (user_id, PASSWORD, user_name, user_email) 
-VALUES ('joo8353', '8353oo', '박주형', 'joo8353@gmail.com');
+VALUES ('joo8353', '8353oo', '박박박', 'joo8353@gmail.com');
 
 commit;

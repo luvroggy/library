@@ -36,8 +36,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller(value = "stackbooksController")
 public class StackbooksControllerImpl implements StackbooksControllerIf {
 
-	static final String clientId = "Qfk0jYAumhKz_zbmJejb";
-	private static final String clientSecret = "pPl3op_lnM";
+	static final String clientId = "새로 입력";
+	private static final String clientSecret = "네이버에 검색하세요";
 	private static final Logger logger = LoggerFactory.getLogger(SearchControllerImpl.class);
 
 	@Resource(name = "stackbooksService")
